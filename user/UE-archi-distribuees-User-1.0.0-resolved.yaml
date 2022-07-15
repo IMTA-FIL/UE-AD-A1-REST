@@ -1,0 +1,153 @@
+---
+openapi: 3.0.0
+info:
+  title: User API
+  description: This is the API of the User service
+  contact:
+    email: helene.coullon@imt-atlantique.fr
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/UE-archi-distribuees/User/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /:
+    get:
+      tags:
+      - developers
+      summary: home page of the service
+      description: |
+        Nothing to do
+      operationId: home
+      responses:
+        "200":
+          description: welcome message
+          content:
+            text/html:
+              schema:
+                type: string
+                example: <h1>Test</h1>
+  /users:
+    get:
+      tags:
+      - developers
+      summary: get the full JSON database
+      description: |
+        Nothing to do
+      operationId: get_users()
+      responses:
+        "200":
+          description: full JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllUsers'
+  /users/{username}:
+    get:
+      tags:
+      - developers
+      summary: get the user info from a name
+      description: |
+        By passing in the appropriate options, you can get a user info
+      operationId: get_user_byname
+      parameters:
+      - name: username
+        in: path
+        description: User name.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maximum: 1
+          minimum: 1
+          type: string
+      responses:
+        "200":
+          description: Info of the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        "400":
+          description: bad input parameter
+  /users/movies/{username}:
+    get:
+      tags:
+      - developers
+      summary: get the movies booked by a user from a name
+      description: |
+        By passing in the appropriate options, you can get the movies booked by a user
+      operationId: get_user_movies_byname
+      parameters:
+      - name: username
+        in: path
+        description: User name.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maximum: 1
+          minimum: 1
+          type: string
+      responses:
+        "200":
+          description: List of movies of the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListMovies'
+        "400":
+          description: bad input parameter
+components:
+  schemas:
+    AllUsers:
+      type: array
+      items:
+        $ref: '#/components/schemas/UserInfo'
+    UserInfo:
+      required:
+      - id
+      - last_active
+      - name
+      type: object
+      properties:
+        id:
+          type: string
+          example: chris_rivers
+        name:
+          type: string
+          example: Peter Curley
+        last_active:
+          type: string
+          example: "1360031325"
+    ListMovies:
+      type: array
+      items:
+        $ref: '#/components/schemas/MovieItem'
+    MovieItem:
+      required:
+      - director
+      - id
+      - rating
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          example: The Martian
+        rating:
+          type: integer
+          example: 7
+        director:
+          type: string
+          example: Paul McGuigan
+        id:
+          type: string
+          example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
