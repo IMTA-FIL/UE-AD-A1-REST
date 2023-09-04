@@ -1,17 +1,17 @@
 ---
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: Movie API
-  description: This is the API of the Movie service
+  summary: This is the API of the Movie service
+  description: This is the API of the Movie service, it should be much much much much much much much much much much much much much much much much much much much much much longer
   contact:
+    name: Helene Coullon
+    url: https://helene-coullon.fr/
     email: helene.coullon@imt-atlantique.fr
   license:
     name: GPL v3
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
   version: 1.0.0
-servers:
-- url: https://virtserver.swaggerhub.com/UE-archi-distribuees/Movie/1.0.0
-  description: SwaggerHub API Auto Mocking
 tags:
 - name: admins
   description: Secured Admin-only calls
@@ -33,7 +33,7 @@ paths:
             text/html:
               schema:
                 type: string
-                example: <h1>Test</h1>
+                example: <h1 style='color:blue'>Welcome to the Movie service!</h1>
   /json:
     get:
       tags:
@@ -48,25 +48,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieID'
+                $ref: '#/components/schemas/AllMovies'
   /movies/{movieid}:
     get:
       tags:
       - developers
       summary: get the movie by its id
-      description: |
-        By passing in the appropriate options, you can get info of a Movie
+      description: By passing in the appropriate options, you can get info of a Movie
       operationId: get_movie_byid
       parameters:
       - name: movieid
         in: path
         description: Movie ID.
         required: true
-        style: simple
-        explode: false
         schema:
-          maximum: 1
-          minimum: 1
           type: string
       responses:
         "200":
@@ -91,8 +86,6 @@ paths:
         style: simple
         explode: false
         schema:
-          maximum: 1
-          minimum: 1
           type: string
       requestBody:
         description: Inventory item to add
@@ -123,8 +116,6 @@ paths:
         style: simple
         explode: false
         schema:
-          maximum: 1
-          minimum: 1
           type: string
       responses:
         "200":
@@ -147,8 +138,6 @@ paths:
         style: form
         explode: true
         schema:
-          maximum: 1
-          minimum: 1
           type: string
       responses:
         "200":
@@ -174,8 +163,6 @@ paths:
         style: simple
         explode: false
         schema:
-          maximum: 1
-          minimum: 1
           type: string
       - name: rate
         in: path
@@ -194,26 +181,35 @@ paths:
           description: movie ID not found
 components:
   schemas:
-    MovieID:
-      required:
-      - id
+    AllMovies:
       type: object
+      required:
+        - movies
       properties:
-        id:
-          $ref: '#/components/schemas/MovieItem'
+        movies:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/MovieItem'
     MovieItem:
-      required:
-      - director
-      - rating
-      - title
       type: object
+      required:
+        - title
+        - rating
+        - director
+        - id
       properties:
         title:
           type: string
           example: The Martian
         rating:
-          type: string
-          example: "7"
+          type: integer
+          example: 7
         director:
           type: string
           example: Paul McGuigan
+        id:
+          type: string
+          example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
+
+
