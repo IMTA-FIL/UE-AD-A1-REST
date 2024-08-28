@@ -27,7 +27,7 @@
     {
       "title": "Victor Frankenstein",
       "rating": 6.4,
-      "director": "Paul McGuigan", 
+      "director": "Paul McGuigan",
       "id": "7daf7208-be4d-4944-a3ae-c1c2f516f3e6"
     },
     {
@@ -41,6 +41,12 @@
       "rating": 7.1,
       "director": "Sam Mendes",
       "id": "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
+    },
+    {
+      "title": "Test",
+      "rating": 1.2,
+      "director": "Someone",
+      "id": "xxx"
     }
   ]
 }
