@@ -1,0 +1,58 @@
+---
+openapi: 3.0.3
+info:
+  title: Booking API
+  description: This is the API of the User service
+  contact:
+    email: gabriel.aillet@imt-atlantique.net
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  version: 1.0.0
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /:
+    get:
+      tags:
+      - developers
+      summary: home page of the service
+      description: |
+        Nothing to do
+      operationId: home
+      responses:
+        "200":
+          description: welcome message
+          content:
+            text/html:
+              schema:
+                type: string
+                example: <h1>Test</h1>
+
+components:
+  schemas:
+    users:
+      required:
+        - userItem
+      type: array
+      items:
+        $ref: '#/components/schemas/userItem'
+    userItem:
+      required:
+      - id
+      - name
+      - last_active
+      type: object
+      properties:
+        id:
+          type: string
+          example: chris_rivers
+        name:
+          type: string
+          example: Chris Rivers
+        last_active:
+          type: integer
+          example: 1360031010

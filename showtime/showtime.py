@@ -12,7 +12,17 @@ with open('{}/databases/times.json'.format("."), "r") as jsf:
 
 @app.route("/", methods=['GET'])
 def home():
-   return "<h1 style='color:blue'>Welcome to the Showtime service!</h1>"
+   return "<h1 style='color:blue'>Test</h1>"
+
+
+@app.route("/showtimes", methods=['GET'])
+def get_times():
+   return schedule
+
+@app.route("/showmovies/<date>", methods=['GET'])
+def get_moviesByDate(date):
+   movie =  filter(lambda x: x["date"] == date,schedule)
+   return movie
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
