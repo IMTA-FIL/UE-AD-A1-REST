@@ -99,6 +99,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookingsUser'
+        "201":
+          description: 'bad input parameter'
+        "400":
+          description: 'Wrong input"'
         "409":
           description: an existing item already exists
 components:
