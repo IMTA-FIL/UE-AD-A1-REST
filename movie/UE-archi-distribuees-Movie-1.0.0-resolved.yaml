@@ -2,7 +2,6 @@
 openapi: 3.0.3
 info:
   title: Movie API
-  summary: This is the API of the Movie service
   description: This is the API of the Movie service, it should be much much much much much much much much much much much much much much much much much much much much much longer
   contact:
     name: Helene Coullon
@@ -173,12 +172,72 @@ paths:
         schema:
           maximum: 10
           minimum: 0
-          type: integer
+          type: number
       responses:
         "200":
           description: rate updated
         "400":
           description: movie ID not found
+  /help:
+    get:
+      tags:
+        - admins
+        - developers
+      summary: give all the entries of this microservice
+      description: give all the entries of this microservice
+      operationId: help
+      responses:
+        "200":
+          description: return JSON
+  /movies_per_ratings:
+    get:
+      tags:
+        - developers
+      summary: gives the list of the movies sorted by decreasing rate
+      description: gives the list of the movies sorted by decreasing rate
+      operationId: get_movies_classify_per_ratings
+      responses:
+        "200":
+          description: return a HTML page
+  /directors:
+    get:
+      tags:
+        - developers
+      summary: gives all the directors who have directed a movie
+      description: gives all the directors who have directed a movie
+      operationId: get_directors
+      responses:
+        "200":
+          description: return a HTML page    
+  /directors/{movie_id}{director_name}:
+    put:
+      tags:
+        - developers
+      summary: change the director of the movie movie_id
+      description: change the director of the movie movie_id
+      operationId: update_director_movie
+      parameters:
+      - name: director_name
+        in: path
+        description: director name
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: movie_id
+        in: path
+        description: movie id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: return a HTML page
+        "400":
+          description: director not found
 components:
   schemas:
     AllMovies:
