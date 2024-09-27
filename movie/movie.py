@@ -29,13 +29,20 @@ def get_movie_byid(movieid):
             return res
     return make_response(jsonify({"error":"Movie ID not found"}),400)
 
-@app.route("/movies/bestrate", methods=['GET'])
-def get_movie_by_best_rate():
-    for movie in movies:
-        if str(movie["id"]) == str(movieid):
-            res = make_response(jsonify(movie),200)
-            return res
-    return make_response(jsonify({"error":"Movie ID not found"}),400)
+@app.route("/movies/rate", methods=['GET'])
+def get_movies_by_rate():
+    rate_order = request.args.get('rate', '')
+
+    if rate_order == 'best':
+        sorted_movies = sorted(movies, key=lambda movie: movie.get("rating", 0), reverse=True)
+    elif rate_order == 'worst':
+        sorted_movies = sorted(movies, key=lambda movie: movie.get("rating", 0))
+    else:
+        return make_response(jsonify({"error": "Invalid or missing 'rate' parameter, use 'best' or 'worst'"}), 400)
+
+    res = make_response(jsonify(sorted_movies), 200)
+    return res
+
 
 @app.route("/moviesbytitle", methods=['GET'])
 def get_movie_bytitle():
@@ -66,8 +73,9 @@ def add_movie(movieid):
     return res
 
 def write(movies):
-    with open('{}/databases/movies.json'.format("."), 'w') as f:
-        json.dump(movies, f)
+    data = {"movies": movies}
+    with open('./databases/movies.json', 'w') as f:
+        json.dump(data, f, indent=4)
 
 @app.route("/movies/<movieid>/<rate>", methods=['PUT'])
 def update_movie_rating(movieid, rate):

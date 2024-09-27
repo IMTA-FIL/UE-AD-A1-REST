@@ -1,5 +1,7 @@
 ---
 openapi: 3.0.3
+servers:
+  - url: http://127.0.0.1:3200
 info:
   title: Movie API
   summary: This is the API of the Movie service
@@ -49,6 +51,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllMovies'
+  /movies/rate:
+    get:
+      tags:
+        - developers
+      summary: Get all movies ordered by rating
+      description: Retrieve all movies ordered by their rating, either from best to worst or from worst to best.
+      operationId: get_movies_by_rate
+      parameters:
+        - name: rate
+          in: query
+          description: Specify the ordering of movies by rating. Use 'best' for descending order and 'worst' for ascending order.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            enum:
+              - best
+              - worst
+      responses:
+        "200":
+          description: All movies ordered by rating
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllMovies'
+        "400":
+          description: Invalid or missing 'rate' parameter
   /movies/{movieid}:
     get:
       tags:
