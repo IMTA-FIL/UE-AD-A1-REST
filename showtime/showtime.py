@@ -12,18 +12,18 @@ with open('{}/databases/times.json'.format("."), "r") as jsf:
 
 @app.route("/", methods=['GET'])
 def home():
-   return "<h1 style='color:blue'>Welcome to the Showtime service!</h1>"
+   return make_response("<h1 style='color:blue'>Welcome to the Showtime service!</h1>",200)
 
 # Fonction pour retourner toute la base de données times : La liste des
 # dates avec les films qui seraient projetés
 @app.route("/showtimes", methods=['GET'])
-def get_showtimes():
-       result = make_response(jsonify(schedule),200)
+def get_schedule():
+       result = make_response({"schedule":schedule},200)
        return result
 
 # Fonction pour retourner la liste des films projetés pour une date donnée
 @app.route("/showmovies/<date>", methods=['GET'])
-def get_schedule_bydate(date):
+def get_movies_bydate(date):
       for showtime in schedule:
             if str(showtime["date"]) == str(date):
                     result = make_response(jsonify(showtime),200)

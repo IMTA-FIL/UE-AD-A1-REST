@@ -36,6 +36,7 @@ def get_movie_byid(movieid):
 @app.route("/moviesbytitle", methods=['GET'])
 def get_movie_bytitle():
     json = ""
+    print("request.args : ", request.args)
     if request.args:
         req = request.args
         for movie in movies:
@@ -116,12 +117,8 @@ def get_movies_classify_per_ratings():
     # We get the list of movies associated with there ranking
     for movie in movies:
         list_movies.append([movie["rating"],movie["title"]])
-    list_movies.sort()
-    body_text = ""
-    # We format the text to create a list in the html screen
-    for elem in list_movies:
-        body_text += f"<li>{elem[1]} : {elem[0]} </li>\n"
-    return make_response(render_template('movies_per_ratings.html', body_text=body_text),200)
+    list_movies.sort(reverse=True)
+    return make_response({"list_movies_sorted":list_movies},200)
 
 @app.route("/directors",methods=["GET"])
 def get_all_directors():
@@ -140,6 +137,15 @@ def update_director_movie(director_name:str,movie_id:str):
             res = make_response(jsonify(movie),200)
             return res
     return make_response(jsonify({"error":"movie ID not found"}),201)
+
+@app.route("/movieid_linked_movietitle")
+def get_movieid_linked_movie_title():
+    """This function links the title of the movie and its id"""
+    dict_movie = {}
+    # We read the whole database and we link the name of the movie with its id
+    for movie in movies:
+        dict_movie[movie["id"]] = movie["title"]
+    return make_response(dict_movie,200)
 
 if __name__ == "__main__":
     #p = sys.argv[1]

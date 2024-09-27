@@ -198,7 +198,11 @@ paths:
       operationId: get_movies_classify_per_ratings
       responses:
         "200":
-          description: return a HTML page
+          description: Return a MovieList
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieList'
   /directors:
     get:
       tags:
@@ -208,7 +212,11 @@ paths:
       operationId: get_directors
       responses:
         "200":
-          description: return a HTML page    
+          description: return an object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectorList'  
   /directors/{movie_id}{director_name}:
     put:
       tags:
@@ -270,5 +278,20 @@ components:
         id:
           type: string
           example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
+    MovieList:
+      required:
+        - list_movies_sorted
+      properties:
+        list_movies_sorted:
+          type: array
+          example: [[7.8,"Peter Pan"],[4.1,"Spider man : Across the spidervers"]]
+    DirectorList:
+      required:
+        - list_directors
+      properties:
+        list_directors:
+          type: array
+          example: ["James Gun", "Steven Spielberg"]
+    
 
 
