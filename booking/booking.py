@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 PORT = 3201
 HOST = '0.0.0.0'
-TIMES_HOST = 'http:localhost:3202/showtimes'
+TIMES_HOST = 'http://localhost:3202/showmovies/'
 
 with open('{}/databases/bookings.json'.format("."), "r") as jsf:
 	bookings = json.load(jsf)["bookings"]
@@ -29,8 +29,13 @@ def bookings_user(userid):
 
 @app.route('/bookings/<userid>', methods=['POST'])
 def add_booking(userid):
-	# TODO appeler Times pour vérifier
 	req = request.get_json()
+	g = requests.get(TIMES_HOST + str(req['date']))
+	if g.status_code != 200:
+		return make_response({'error': 'date indisponible'}, 409)
+	get = json.loads(g.content)
+	if req['movieid'] not in get['movies']:
+		return make_response(jsonify({'error': 'This movie isn\'t planned for this date'}), 409)
 	booking = None
 	for b in bookings:
 		if str(b['userid']) == str(userid):
