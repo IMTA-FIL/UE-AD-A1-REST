@@ -1,5 +1,7 @@
 ---
 openapi: 3.0.3
+servers:
+  - url: http://127.0.0.1:3202
 info:
   title: Showtime API
   description: This is the API of the Showtime service
