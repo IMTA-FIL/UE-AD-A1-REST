@@ -30,7 +30,7 @@ def get_schedules_from_date(date):
             json = schedule
 
     if not json:
-        res = make_response({"error": "bad input parameter"})
+        res = make_response({"error": "bad input parameter"}, 400)
     else :
         res = make_response(jsonify(json), 200)
     return res
