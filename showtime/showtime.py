@@ -34,7 +34,7 @@ def is_invalide_date(date):
     return False
 
 
-@app.route("/showmovies/<date>")
+@app.route("/showmovies/<date>", methods='GET')
 def get_schedules_from_date(date):
     if is_invalide_date(date):
         error_text = {"error": "bad input parameter"}
