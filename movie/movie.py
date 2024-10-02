@@ -59,6 +59,23 @@ def get_movie_bytitle():
         res = make_response(jsonify(json),200)
     return res
 
+@app.route("/moviesbydirector", methods=['GET'])
+def get_movie_bydirector():
+    director_movies = []
+
+    if request.args:
+        req = request.args
+        for movie in movies:
+            if str(movie["director"]) == str(req["director"]):
+                director_movies.append(movie)
+
+    if not director_movies:
+        res = make_response(jsonify({"error": "No movies found for this director"}), 400)
+    else:
+        res = make_response(jsonify(director_movies), 200)
+
+    return res
+
 @app.route("/addmovie/<movieid>", methods=['POST'])
 def add_movie(movieid):
     req = request.get_json()
@@ -81,12 +98,28 @@ def write(movies):
 def update_movie_rating(movieid, rate):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
-            movie["rating"] = rate
+            movie["rating"] = float(rate)
             res = make_response(jsonify(movie),200)
             return res
 
     res = make_response(jsonify({"error":"movie ID not found"}),201)
     return res
+
+@app.route("/help", methods=['GET'])
+def get_help():
+    endpoints = {
+        "/": "Home page of the service",
+        "/json": "Get the full JSON database",
+        "/movies/rate": "Get all movies ordered by rating",
+        "/movies/<movieid>": "Get a movie by its ID",
+        "/moviesbytitle": "Get a movie by its title",
+        "/moviesbydirector": "Get all movies by a specific director",
+        "/addmovie/<movieid>": "Add a new movie with a specific ID",
+        "/movies/<movieid>/<rate> (UPDATE)": "Update a movie's rating",
+        "/movies/<movieid> (DELETE)": "Delete a movie by its ID",
+        "/help": "Get a list of all available endpoints"
+    }
+    return jsonify({"endpoints": endpoints})
 
 @app.route("/movies/<movieid>", methods=['DELETE'])
 def del_movie(movieid):

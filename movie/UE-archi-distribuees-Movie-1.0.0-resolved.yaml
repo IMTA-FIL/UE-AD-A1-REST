@@ -178,6 +178,32 @@ paths:
                 $ref: '#/components/schemas/MovieItem'
         "400":
           description: bad input parameter
+  /moviesbydirector:
+    get:
+      tags:
+        - developers
+      summary: Get movies by director
+      description: |
+        By passing in the appropriate options, you can get Movie info
+      operationId: get_movie_bydirector
+      parameters:
+        - name: director
+          in: query
+          description: Specify the name of the director to get all movies directed by them.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Movie item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieItem'
+        "400":
+          description: bad input parameter
   /movies/{movieid}/{rate}:
     put:
       tags:
@@ -209,6 +235,34 @@ paths:
           description: rate updated
         "400":
           description: movie ID not found
+  /help:
+    get:
+      tags:
+        - developers
+      summary: Get a list of all available endpoints
+      description: Retrieve a list of all the endpoints available in this Movie service API with their descriptions.
+      operationId: get_help
+      responses:
+        "200":
+          description: List of all API endpoints and descriptions
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  endpoints:
+                    - path: /
+                      description: Home page of the service
+                    - path: /json
+                      description: Get the full JSON database
+                    - path: /movies/rate
+                      description: Get all movies ordered by rating
+                    - path: /movies/{movieid}
+                      description: Get a movie by its ID
+                    - path: /moviesbytitle
+                      description: Get a movie by its title
+                    - path: /moviesbydirector
+                      description: Get all movies by a specific director
 components:
   schemas:
     AllMovies:
