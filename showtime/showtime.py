@@ -35,7 +35,7 @@ def is_invalide_date(date):
 
 
 @app.route("/showmovies/<date>")
-def get_schedules_by_date(date):
+def get_schedules_from_date(date):
     if is_invalide_date(date):
         error_text = {"error": "bad input parameter"}
         response = make_response(jsonify(error_text), 400)
