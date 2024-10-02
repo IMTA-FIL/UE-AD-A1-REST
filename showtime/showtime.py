@@ -22,30 +22,17 @@ def get_schedules():
     res = make_response(json, 200)
     return res
 
-def is_invalide_date(date):
-    """
-    only basic validation are made here
-    we don't check is the date is a valid date, only if it's a valid string
-    """
-    if len(date) != 8:
-        return True
-    if not date.isdigit():
-        return True
-    return False
-
-
-@app.route("/showmovies/<date>", methods='GET')
+@app.route("/showmovies/<date>", methods=['GET'])
 def get_schedules_from_date(date):
-    if is_invalide_date(date):
-        error_text = {"error": "bad input parameter"}
-        response = make_response(jsonify(error_text), 400)
-        return response
-
-    json = []
+    json = ""
     for schedule in schedules:
         if schedule["date"] == date:
-            json.append(schedule)
-    res = make_response(jsonify(json), 200)
+            json = schedule
+
+    if not json:
+        res = make_response({"error": "bad input parameter"})
+    else :
+        res = make_response(jsonify(json), 200)
     return res
 
 
