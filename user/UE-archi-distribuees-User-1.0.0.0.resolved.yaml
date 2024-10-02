@@ -1,0 +1,171 @@
+openapi: 3.0.1
+info:
+  title: User API
+  version: 1.0.0
+  description: API made to manage the request by the user
+  contact: 
+    email: gabriel.bocquet@imt-atlantique.fr
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /:
+    get:
+      summary: Home page
+      tags: 
+      - developers
+      description: Return a welome message
+      responses:
+        '200':
+          description: Welcome page
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<h1 style='color:blue'>Welcome to the User service!</h1>"
+  /movies_per_ratings:
+    get:
+      summary: return the movies sorted by decreasing rate
+      description: Get and return all the movies, sorted by decreasing rate
+      responses:
+        '200':
+          description: Html page which prints the movies sorted by decreasing rate
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<ul><li>Film A : 4.5</li><li>Film B : 4.0</li></ul>"
+        '400':
+          description: There was a problem during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /movies_available/{date}:
+    get:
+      summary: Get the moveis at the specified date
+      description: Print all the movies which can be booked at the date date
+      parameters:
+        - in: path
+          name: date
+          required: true
+          explode: false
+          style: simple
+          schema:
+            type: string
+          description: Date YYYYMMDD
+      responses:
+        '200':
+          description: HTML page which shows the movies available at the date date
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<ul><li>Film A</li><li>Film B</li></ul>"
+        '400':
+          description: There was a problem during the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /book_a_movie:
+    post:
+      summary: Book a movie
+      description: Book a movie for the user at the specified date
+      requestBody:
+        description: Informations needed
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingRequest'
+      responses:
+        '200':
+          description: Booking successful
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<h1>Example</h1>"
+        '205':
+          description: Impossible to book the movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "We couldn't book the date, Sadge :'("
+        '400':
+          description: Bad argument
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /booking_made/{username}:
+    get:
+      summary: Get the bookings made by the user
+      description: Get the bookings made by the user
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+          description: Name of the user
+      responses:
+        '200':
+          description: HTML page which shows the bookings made by the user
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<ul><li>2024/04/30<ul><li>Film A</li></ul></li></ul>"
+        '300':
+          description: The user name doesn't exist
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<h1>The user john_doe doesn't exist</h1>"
+        '301':
+          description: The user exists but have zero booking
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<h1>Zero booking was made with the user john_doe</h1>"
+components:
+  schemas:
+    BookingRequest:
+      type: object
+      required:
+        - moviename
+        - date
+        - username
+      properties:
+        moviename:
+          type: string
+          description: Name of the movie which have to be booked.
+          example: Beetlejuice
+        date:
+          type: string
+          description: Date of the booking wanted YYYYMMDD.
+          example: "20240430"
+        username:
+          type: string
+          description: Name of the user who wants to book the movie
+          example: "john_doe"
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Error Message
+          example: "Bad argument"
