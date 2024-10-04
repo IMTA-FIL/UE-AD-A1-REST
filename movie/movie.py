@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, make_response
 import json
+import yaml
 import sys
 from werkzeug.exceptions import NotFound
 
@@ -105,21 +106,23 @@ def update_movie_rating(movieid, rate):
     res = make_response(jsonify({"error":"movie ID not found"}),201)
     return res
 
+with open("UE-archi-distribuees-Movie-1.0.0-resolved.yaml", "r") as f:
+    openapi_spec = yaml.safe_load(f)
+
 @app.route("/help", methods=['GET'])
 def get_help():
-    endpoints = {
-        "/": "Home page of the service",
-        "/json": "Get the full JSON database",
-        "/movies/rate": "Get all movies ordered by rating",
-        "/movies/<movieid>": "Get a movie by its ID",
-        "/moviesbytitle": "Get a movie by its title",
-        "/moviesbydirector": "Get all movies by a specific director",
-        "/addmovie/<movieid>": "Add a new movie with a specific ID",
-        "/movies/<movieid>/<rate> (UPDATE)": "Update a movie's rating",
-        "/movies/<movieid> (DELETE)": "Delete a movie by its ID",
-        "/help": "Get a list of all available endpoints"
-    }
-    return jsonify({"endpoints": endpoints})
+    paths = openapi_spec.get("paths", {})
+    help_info = []
+
+    for path, path_data in paths.items():
+        for method, method_data in path_data.items():
+            help_info.append({
+                "url": path,
+                "method": method.upper(),
+                "summary": method_data.get("summary", "No summary available"),
+                "description": method_data.get("description", "No description available")
+            })
+    return jsonify({"endpoints": help_info})
 
 @app.route("/movies/<movieid>", methods=['DELETE'])
 def del_movie(movieid):
