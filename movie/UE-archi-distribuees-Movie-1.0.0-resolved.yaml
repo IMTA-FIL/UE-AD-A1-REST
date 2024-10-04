@@ -2,7 +2,6 @@
 openapi: 3.0.3
 info:
   title: Movie API
-  summary: This is the API of the Movie service
   description: This is the API of the Movie service, it should be much much much much much much much much much much much much much much much much much much much much much longer
   contact:
     name: Helene Coullon
