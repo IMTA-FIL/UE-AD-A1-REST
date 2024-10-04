@@ -4,16 +4,23 @@ services:
     build: ./movie/
     ports:
       - "3200:3200"
+    volumes:
+      - ./movie:/app  # Montage du dossier local movie dans /app du conteneur
   showtime:
     build: ./showtime/
     ports:
       - "3202:3202"
+    volumes:
+      - ./showtime:/app  # Montage du dossier local showtime dans /app du conteneur
   user:
     build: ./user/
     ports:
-        - "3203:3203"
+      - "3203:3203"
+    volumes:
+      - ./user:/app  # Montage du dossier local user dans /app du conteneur
   booking:
     build: ./booking/
     ports:
-        - "3201:3201"
-
+      - "3201:3201"
+    volumes:
+      - ./booking:/app  # Montage du dossier local booking dans /app du conteneur

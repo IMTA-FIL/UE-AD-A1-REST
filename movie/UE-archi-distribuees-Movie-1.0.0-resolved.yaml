@@ -13,15 +13,15 @@ info:
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
   version: 1.0.0
 tags:
-- name: admins
-  description: Secured Admin-only calls
-- name: developers
-  description: Operations available to regular developers
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
 paths:
   /:
     get:
       tags:
-      - developers
+        - developers
       summary: home page of the service
       description: |
         Nothing to do
@@ -37,7 +37,7 @@ paths:
   /json:
     get:
       tags:
-      - developers
+        - developers
       summary: get the full JSON database
       description: |
         Nothing to do
@@ -48,75 +48,75 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllMovies'
+                $ref: "#/components/schemas/AllMovies"
   /movies/{movieid}:
     get:
       tags:
-      - developers
+        - developers
       summary: get the movie by its id
       description: By passing in the appropriate options, you can get info of a Movie
       operationId: get_movie_byid
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        schema:
-          type: string
+        - name: movieid
+          in: path
+          description: Movie ID.
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Movie description
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieItem'
+                $ref: "#/components/schemas/MovieItem"
         "400":
           description: bad input parameter
     post:
       tags:
-      - admins
+        - admins
       summary: add a movie item
       description: Adds a movie to the system
       operationId: create_movie
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: movieid
+          in: path
+          description: Movie ID.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       requestBody:
         description: Inventory item to add
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MovieItem'
+              $ref: "#/components/schemas/MovieItem"
       responses:
         "200":
           description: Movie created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieItem'
+                $ref: "#/components/schemas/MovieItem"
         "409":
           description: an existing item already exists
     delete:
       tags:
-      - admins
+        - admins
       summary: delete a movie item
       description: Adds a movie to the system
       operationId: del_movie
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: movieid
+          in: path
+          description: Movie ID.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       responses:
         "200":
           description: item deleted
@@ -125,55 +125,55 @@ paths:
   /moviesbytitle:
     get:
       tags:
-      - developers
+        - developers
       summary: get the movie by its title
       description: |
         By passing in the appropriate options, you can get Movie info
       operationId: get_movie_bytitle
       parameters:
-      - name: title
-        in: query
-        description: pass a title
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
+        - name: title
+          in: query
+          description: pass a title
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
       responses:
         "200":
           description: Movie item
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieItem'
+                $ref: "#/components/schemas/MovieItem"
         "400":
           description: bad input parameter
   /movies/{movieid}/{rate}:
     put:
       tags:
-      - admins
+        - admins
       summary: update a movie rate
       description: update the rating of a movie
       operationId: update_movie_rating
       parameters:
-      - name: movieid
-        in: path
-        description: Movie ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      - name: rate
-        in: path
-        description: Movie rating.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          maximum: 10
-          minimum: 0
-          type: integer
+        - name: movieid
+          in: path
+          description: Movie ID.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: rate
+          in: path
+          description: Movie rating.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            maximum: 10
+            minimum: 0
+            type: integer
       responses:
         "200":
           description: rate updated
@@ -190,7 +190,7 @@ components:
           type: array
           items:
             type: object
-            $ref: '#/components/schemas/MovieItem'
+            $ref: "#/components/schemas/MovieItem"
     MovieItem:
       type: object
       required:
@@ -211,5 +211,3 @@ components:
         id:
           type: string
           example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
-
-
