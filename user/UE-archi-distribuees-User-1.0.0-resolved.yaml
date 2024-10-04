@@ -42,7 +42,155 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AllUser'
-  
+  /users/{userid}:
+    post:
+      tags:
+      - admins
+      summary: Adds a new user
+      operationId: create_user
+      parameters:
+      - name: userid
+        in: path
+        description: User ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Inventory item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "409":
+          description: an existing item already exists
+    delete:
+      tags:
+      - admins
+      summary: delete a user item
+      operationId: del_user
+      parameters:
+      - name: userid
+        in: path
+        description: User ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: item deleted
+        "400":
+          description: ID not found
+    get:
+      tags:
+      - developers
+      summary: get the user by its id
+      description: By passing in the appropriate options, you can get info of a User
+      operationId: get_user_byid
+      parameters:
+      - name: userid
+        in: path
+        description: User ID.
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: User description
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: bad input parameter
+  /bookings/{userid}:
+    get:
+      tags:
+      - developer
+      summary: lists the bookings of a user
+      operationId: bookings_user
+      parameters:
+      - name: userid
+        required: true
+        in: path
+        description: User ID
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingsUser'
+        "400":
+          description: user not found
+    post:
+      tags:
+      - developer
+      summary: adds a new movie to the bookings of a user
+      operationId: add_bookings_user
+      parameters:
+      - name: userid
+        required: true
+        in: path
+        description: User ID
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Inventory item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DateItem'
+      responses:
+        "200":
+          description: new booking
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DateItem'
+        "400":
+          description: user not found
+  /movieinfos/{userid}:
+    get:
+      tags:
+      -  developer
+      summary: Lists the infos of movies seen or booked by the user
+      operationId: movieinfos_user
+      parameters:
+      - name: userid
+        required: true
+        in: path
+        description: User ID
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllMovies'
+        "400":
+          description: user not found
+
 components:
   schemas:
     AllUser:
@@ -70,3 +218,76 @@ components:
         last_active:
           type: integer
           example: 1360031010
+    AllBookings:
+      type: array
+      items:
+        $ref: '#/components/schemas/BookingsUser'
+    BookingsUser:
+      required:
+      - dates
+      - userid
+      type: object
+      properties:
+        userid:
+          type: string
+          example: chris_rivers
+        dates:
+          type: array
+          items:
+            $ref: '#/components/schemas/DateItem'
+    DateItem:
+      required:
+      - date
+      - movies
+      type: object
+      properties:
+        date:
+          type: string
+          example: "20151201"
+        movies:
+          type: array
+          items:
+            type: string
+            example: 276c79ec-a26a-40a6-b3d3-fb242a5947b6
+    NewMovie:
+      required:
+      - date
+      - movieid
+      type: object
+      properties:
+        date:
+          type: string
+          example: "20151201"
+        movieid:
+          type: string
+          example: 276c79ec-a26a-40a6-b3d3-fb242a5947b6
+    AllMovies:
+      type: object
+      required:
+        - movies
+      properties:
+        movies:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/MovieItem'
+    MovieItem:
+      type: object
+      required:
+        - title
+        - rating
+        - director
+        - id
+      properties:
+        title:
+          type: string
+          example: The Martian
+        rating:
+          type: integer
+          example: 7
+        director:
+          type: string
+          example: Paul McGuigan
+        id:
+          type: string
+          example: 39ab85e5-5e8e-4dc5-afea-65dc368bd7ab
