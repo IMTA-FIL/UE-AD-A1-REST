@@ -1,5 +1,7 @@
 ---
 openapi: 3.0.3
+servers:
+  - url: http://127.0.0.1:3201
 info:
   title: Booking API
   description: This is the API of the Booking service
@@ -99,6 +101,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookingsUser'
+        "400":
+          description: item not found
         "409":
           description: an existing item already exists
 components:
