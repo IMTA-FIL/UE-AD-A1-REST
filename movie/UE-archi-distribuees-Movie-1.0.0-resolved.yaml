@@ -79,6 +79,67 @@ paths:
                 $ref: '#/components/schemas/AllMovies'
         "400":
           description: Invalid or missing 'rate' parameter
+  /addmovie/{movieid}:
+    post:
+      tags:
+        - admins
+      summary: Add a new movie
+      description: Adds a new movie to the database using a specific ID. The movie information should be passed in the request body as JSON.
+      operationId: add_movie
+      parameters:
+        - name: movieid
+          in: path
+          description: Movie ID (unique identifier for the movie).
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Movie object to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "12345"
+                title:
+                  type: string
+                  example: "The Matrix"
+                director:
+                  type: string
+                  example: "Wachowski Brothers"
+                rating:
+                  type: integer
+                  example: 9
+              required:
+                - id
+                - title
+                - director
+                - rating
+      responses:
+        "200":
+          description: Movie added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "movie added"
+        "409":
+          description: A movie with the same ID already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "movie ID already exists"
+
   /movies/{movieid}:
     get:
       tags:
@@ -178,6 +239,32 @@ paths:
                 $ref: '#/components/schemas/MovieItem'
         "400":
           description: bad input parameter
+  /moviesbydirector:
+    get:
+      tags:
+        - developers
+      summary: Get movies by director
+      description: |
+        By passing in the appropriate options, you can get Movie info
+      operationId: get_movie_bydirector
+      parameters:
+        - name: director
+          in: query
+          description: Specify the name of the director to get all movies directed by them.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Movie item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovieItem'
+        "400":
+          description: bad input parameter
   /movies/{movieid}/{rate}:
     put:
       tags:
@@ -209,6 +296,56 @@ paths:
           description: rate updated
         "400":
           description: movie ID not found
+  /help:
+    get:
+      tags:
+        - developers
+      summary: Get a list of all available endpoints
+      description: Retrieve a list of all the endpoints available in this Movie service API with their methods and summaries.
+      operationId: get_help
+      responses:
+        "200":
+          description: List of all API endpoints with their methods and summaries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  endpoints:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          example: "/movies/{movieid}"
+                        method:
+                          type: string
+                          example: "GET"
+                        summary:
+                          type: string
+                          example: "Get a movie by its ID"
+                example:
+                  endpoints:
+                    - url: "/"
+                      method: "GET"
+                      summary: "Home page of the service"
+                    - url: "/json"
+                      method: "GET"
+                      summary: "Get the full JSON database"
+                    - url: "/movies/rate"
+                      method: "GET"
+                      summary: "Get all movies ordered by rating"
+                    - url: "/movies/{movieid}"
+                      method: "GET"
+                      summary: "Get a movie by its ID"
+                    - url: "/moviesbytitle"
+                      method: "GET"
+                      summary: "Get a movie by its title"
+                    - url: "/moviesbydirector"
+                      method: "GET"
+                      summary: "Get all movies by a specific director"
+
 components:
   schemas:
     AllMovies:

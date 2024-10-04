@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, make_response
 import json
+import yaml
 import sys
 from werkzeug.exceptions import NotFound
 
@@ -59,6 +60,23 @@ def get_movie_bytitle():
         res = make_response(jsonify(json),200)
     return res
 
+@app.route("/moviesbydirector", methods=['GET'])
+def get_movie_bydirector():
+    director_movies = []
+
+    if request.args:
+        req = request.args
+        for movie in movies:
+            if str(movie["director"]) == str(req["director"]):
+                director_movies.append(movie)
+
+    if not director_movies:
+        res = make_response(jsonify({"error": "No movies found for this director"}), 400)
+    else:
+        res = make_response(jsonify(director_movies), 200)
+
+    return res
+
 @app.route("/addmovie/<movieid>", methods=['POST'])
 def add_movie(movieid):
     req = request.get_json()
@@ -81,12 +99,30 @@ def write(movies):
 def update_movie_rating(movieid, rate):
     for movie in movies:
         if str(movie["id"]) == str(movieid):
-            movie["rating"] = rate
+            movie["rating"] = float(rate)
             res = make_response(jsonify(movie),200)
             return res
 
     res = make_response(jsonify({"error":"movie ID not found"}),201)
     return res
+
+with open("UE-archi-distribuees-Movie-1.0.0-resolved.yaml", "r") as f:
+    openapi_spec = yaml.safe_load(f)
+
+@app.route("/help", methods=['GET'])
+def get_help():
+    paths = openapi_spec.get("paths", {})
+    help_info = []
+
+    for path, path_data in paths.items():
+        for method, method_data in path_data.items():
+            help_info.append({
+                "url": path,
+                "method": method.upper(),
+                "summary": method_data.get("summary", "No summary available"),
+                "description": method_data.get("description", "No description available")
+            })
+    return jsonify({"endpoints": help_info})
 
 @app.route("/movies/<movieid>", methods=['DELETE'])
 def del_movie(movieid):
