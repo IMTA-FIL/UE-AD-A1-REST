@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, make_response
 import requests
 import json
 from werkzeug.exceptions import NotFound
+import sys
 
 app = Flask(__name__)
 
@@ -38,15 +39,19 @@ def get_movies_available_at_date(date:str):
    req = requests.request("GET", BOOKING_PATH + f"/movies_at_the_date/{date}")
    if req.status_code==200:
       # Now we get all the dict which link the movie id with their title
+      print("req.json() : ", req.json())
       req2 = requests.request("GET", MOVIE_PATH + "/movieid_linked_movietitle")
       if req2.status_code == 200:
          list_name = []
          dict_id_title = req2.json() # With this dict, we can convert an id into a title
+         print("dict_id_title : ", dict_id_title)
          for movieid in req.json()["movies"]:
+            print("")
             list_name.append(dict_id_title[movieid])
          body_text = ""
          for elem in list_name:
             body_text += f"<li>{elem} </li>\n" #elem[1] = movie_name & elem[2] = rating
+         print("body_text = ", body_text)
          return make_response(render_template('get_movies_available_at_date.html',body_text=body_text,date=f"{date[0:4]}/{date[4:6]}/{date[6:]}"))
       return make_response({"error":"There was a problem during the request"},400)
       
@@ -115,4 +120,8 @@ def convert_username_id(username:str):
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
+   if len(sys.argv) > 1 and sys.argv[1] == "docker":
+      print("Image loaded with docker")
+      BOOKING_PATH = "http://booking:3201"
+      MOVIE_PATH = "http://movie:3200"
    app.run(host=HOST, port=PORT)

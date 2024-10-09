@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, make_response
 import requests
 import json
+import sys
 from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
@@ -102,4 +103,7 @@ def write(book):
 
 if __name__ == "__main__":
    print("Server running in port %s"%(PORT))
+   if len(sys.argv) > 1 and sys.argv[1] == "docker":
+      print("Image loaded with docker")
+      PATH_TIMES = "http://showtime:3202"
    app.run(host=HOST, port=PORT)
