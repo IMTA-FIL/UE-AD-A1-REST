@@ -1,6 +1,11 @@
 {
   "users": [
     {
+      "id": "chris_rivers",
+      "name": "Chris Rivers",
+      "last_active": 1360031010
+    },
+    {
       "id": "peter_curley",
       "name": "Peter Curley",
       "last_active": 1360031222
@@ -31,9 +36,9 @@
       "last_active": 1360031202
     },
     {
-      "id": "chris_rivers",
-      "last_active": 1360031010,
-      "name": "Chris Rivers"
+      "id": "pacome_cailleteau",
+      "last_active": 1360031222,
+      "name": "Pac\u00f4me Cailleteau"
     }
   ]
 }

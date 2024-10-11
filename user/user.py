@@ -4,6 +4,8 @@ import yaml
 from flask import Flask, render_template, request, jsonify, make_response
 import requests
 import json
+
+from starlette.config import undefined
 from werkzeug.exceptions import NotFound
 
 app = Flask(__name__)
@@ -54,7 +56,8 @@ def add_user_byid(userid):
     return make_response(jsonify({"message": "user added"}), 200)
 
 
-@app.route("/users/<userid>", methods=['UPDATE'])
+#Voir pour une meilleure gestion des erreurs
+@app.route("/users/<userid>", methods=['PUT'])
 def update_user_byid(userid):
     req = request.get_json()
 
@@ -77,9 +80,18 @@ def del_user_byid(userid):
     return res
 
 
+# Tous les users triés par leur dernière activité
+@app.route("/users/bylastactive", methods=['GET'])
+def get_user_bylastactive():
+    json = jsonify(users)
+    sorted_users_bylastactive = sorted(users, key=lambda user: user.get("last_active", 0))
+    response = make_response(sorted_users_bylastactive, 200)
+    return response
+
+
 # récupérer tous les bookings d'un user (lien avec booking)
 @app.route("/users/<userid>/booking", methods=['GET'])
-def get_bookings_of_user_byuserid(userid):
+def get_user_bookings(userid):
     for user in users:
         if str(user["id"]) == str(userid):
             try:
