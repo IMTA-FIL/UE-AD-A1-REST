@@ -32,7 +32,7 @@ If you don't have docker on your computer, you can :
 3. go into the repository using
 
    ```bash
-   pip install foobar
+   cd path/to/your/repository
    ```
 
 4. go into showtimes using
