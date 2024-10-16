@@ -84,7 +84,7 @@ def add_booking_byuser(userid:str):
       write(bookings)
       return make_response({"userid":userid,"dates":[{"date":req["date"],"movies":[req["movieid"]]}]},200)
    return make_response(jsonify({"error": "Wrong input"}),400)
-
+ 
 @app.route("/movies_at_the_date/<date>",methods=["GET"])
 def get_movie_at_date(date:str):
    """This function will get all the movies available at the date date"""
