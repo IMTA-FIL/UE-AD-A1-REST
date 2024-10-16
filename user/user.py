@@ -59,7 +59,6 @@ def get_movies_available_at_date(date:str):
 
 @app.route("/book_a_movie",methods=["POST"])
 def book_the_movie(): # Convertir ceci en POST avec dico
-   ## TO DO : Voir si ça marche si l'utilisateur n'est pas dans la base de données initialisement 
    if request.args:
       """This function books the movie name moviename for the user username"""
       # We get the informations we want
