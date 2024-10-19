@@ -37,23 +37,22 @@ def get_users():
 def get_user_byid(userid):
     for user in users:
         if str(user['id']) == str(userid):
-            res = make_response(json.dumps(user), 200)
-            return res
-    return make_response(jsonify({'error': 'User not found'}), 404)
+            return make_response(jsonify(user), 200)
+    return make_response(jsonify({'error': 'User not found', "id": userid}), 404)
 
 
-@app.route("/users/<userid>", methods=['POST'])
-def add_user_byid(userid):
+@app.route("/users/", methods=['POST'])
+def add_user():
     req = request.get_json()
 
     for user in users:
-        if str(user['id']) == str(userid):
-            return make_response(jsonify({'error': 'User ID already exists'}), 409)
+        if str(user['id']) == req['id']:
+            return make_response(jsonify({'error': 'User ID already exists'}, user), 409)
 
     users.append(req)
     write(users)
 
-    return make_response(jsonify({"message": "user added"}), 200)
+    return make_response(jsonify({"message": "user added"}, req), 200)
 
 
 #Voir pour une meilleure gestion des erreurs
@@ -66,17 +65,17 @@ def update_user_byid(userid):
             users.remove(user)
             users.append(req)
             write(users)
-            return make_response(jsonify({"message": "user updated"}), 200)
-    return make_response(jsonify({'error': 'User not found'}), 404)
+            return make_response(jsonify({"message": "user updated"},req), 200)
+    return make_response(jsonify({'error': 'User not found', "id": userid}), 404)
 
 @app.route("/users/<userid>", methods=['DELETE'])
 def del_user_byid(userid):
     for user in users:
         if str(user["id"]) == str(userid):
             users.remove(user)
-            return make_response(jsonify(user),200)
+            return make_response(jsonify({"message": "user deleted"}, user),200)
 
-    res = make_response(jsonify({"error":"user ID not found"}),400)
+    res = make_response(jsonify({"error":"user ID not found", "id": userid}),400)
     return res
 
 
@@ -90,7 +89,7 @@ def get_user_bylastactive():
 
 
 # récupérer tous les bookings d'un user (lien avec booking)
-@app.route("/users/<userid>/booking", methods=['GET'])
+@app.route("/users/<userid>/bookings", methods=['GET'])
 def get_user_bookings(userid):
     for user in users:
         if str(user["id"]) == str(userid):
@@ -99,8 +98,8 @@ def get_user_bookings(userid):
                 if response.status_code != 200:
                     return make_response(jsonify({"error": "item not found"}), 400)
 
-                bookings = response.json().get("", [])
-                return make_response(jsonify({"dates": bookings}), 200)
+                bookings = response.json()
+                return make_response(jsonify({"bookings": bookings}), 200)
             except requests.RequestException as e:
                 return make_response(jsonify({"error": "Error contacting Booking service", "details": str(e)}), 500)
 
@@ -108,7 +107,37 @@ def get_user_bookings(userid):
 
 
 # même chose, mais en récupérant aussi les infos des films (lien avec booking et movie)
-# TO DO
+@app.route("/users/<userid>/bookings/movies", methods=['GET'])
+def get_user_bookings_movies(userid):
+    for user in users:
+        if str(user["id"]) == str(userid):
+            try:
+                response_bookings = requests.get(f"{BOOKING_SERVICE_URL}{userid}")
+                if response_bookings.status_code != 200:
+                    return make_response(jsonify({"error": "item not found"}), 400)
+
+                bookings = response_bookings.json()
+
+                try:
+                    for booking in bookings['dates']:
+                        movie_booked = booking['movies'][0]
+                        response_movie = requests.get(f"{MOVIE_SERVICE_URL}{movie_booked}")
+                        if response_movie.status_code != 200:
+                            return make_response(jsonify({"error": "Movie not found"}), 400)
+
+                        movie_booked = response_movie.json()
+                        booking['movies'][0] = movie_booked
+
+                    bookings_with_movies = bookings['dates']
+                except requests.RequestException as e:
+                    return make_response(jsonify({"error": "Error contacting Movie service", "details": str(e)}), 500)
+
+                return make_response(jsonify({"bookings": bookings_with_movies}), 200)
+            except requests.RequestException as e:
+                return make_response(jsonify({"error": "Error contacting Booking service", "details": str(e)}), 500)
+
+    return
+
 
 
 @app.route("/help", methods=['GET'])

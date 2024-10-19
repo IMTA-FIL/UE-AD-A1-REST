@@ -4,7 +4,6 @@ servers:
   - url: http://127.0.0.1:3200
 info:
   title: User API
-  summary: This is the API of the User service
   description: This is the API of the User service (to complete)
   license:
     name: GPL v3
@@ -46,7 +45,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AllMovies'
+                $ref: '#/components/schemas/AllUsers'
   /users/:
     get:
       tags:
@@ -63,36 +62,12 @@ paths:
                 $ref: '#/components/schemas/AllUsers'
         "400":
           description: Invalid parameter
-  /users/booking/{userid}/{booking}:
-    get:
-      tags:
-        - developers
-      summary: Get all users
-      description: Retrieve all users.
-      operationId: get_users
-      responses:
-        "200":
-          description: All users
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AllUsers'
-        "400":
-          description: Invalid parameter
-  /adduser/{userid}:
     post:
       tags:
         - admins
       summary: Add a new user
-      description: Adds a new user to the database using a specific ID. The user information should be passed in the request body as JSON.
+      description: Adds a new user to the database. The user information should be passed in the request body as JSON.
       operationId: add_user
-      parameters:
-        - name: userid
-          in: path
-          description: User ID (unique identifier for the user).
-          required: true
-          schema:
-            type: string
       requestBody:
         description: User object to be added
         required: true
@@ -110,9 +85,6 @@ paths:
                 last_activite:
                   type: integer
                   example: 1360031325
-                rating:
-                  type: integer
-                  example: 9
               required:
                 - id
                 - name
@@ -143,7 +115,7 @@ paths:
       tags:
       - developers
       summary: get the user by its id
-      description: By passing in the appropriate options, you can get info of a user
+      description: By passing in the appropriate options, you can get info of an user
       operationId: get_user_byid
       parameters:
       - name: userid
@@ -161,41 +133,41 @@ paths:
                 $ref: '#/components/schemas/UserItem'
         "400":
           description: bad input parameter
-    post:
+    put:
       tags:
-      - admins
+        - admins
       summary: user a movie item
-      description: Adds a user to the system
-      operationId: create_movie
+      description: Update an user to the system
+      operationId: update_user_byid
       parameters:
-      - name: userid
-        in: path
-        description: User ID.
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+        - name: userid
+          in: path
+          description: User ID.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       requestBody:
         description: Inventory item to add
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MovieItem'
+              $ref: '#/components/schemas/AllUsers'
       responses:
         "200":
           description: User created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MovieItem'
+                $ref: '#/components/schemas/AllUsers'
         "409":
           description: an existing item already exists
     delete:
       tags:
       - admins
-      summary: delete a user item
-      description: Delete a user to the system
+      summary: delete an user item
+      description: Delete an user to the system
       operationId: del_user
       parameters:
       - name: userid
@@ -211,39 +183,48 @@ paths:
           description: item deleted
         "400":
           description: ID not found
-  /usersbyname:
-    get:
-      tags:
-      - developers
-      summary: get the user by its name
-      description: |
-        By passing in the appropriate options, you can get User info
-      operationId: get_user_byname
-      parameters:
-      - name: name
-        in: query
-        description: pass a name
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      responses:
-        "200":
-          description: User item
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserItem'
-        "400":
-          description: bad input parameter
-  /userbylastactive:
+
+  /users/{userid}/bookings:
     get:
       tags:
         - developers
-      summary: Get user by its last active
-      description: |
-        By passing in the appropriate options, you can get User info
+      summary: Get bookings of an user
+      description: Get all the bookings for an user with his id.
+      operationId: get_user_bookings
+      responses:
+        "200":
+          description: User's bookings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllUsers'
+        "400":
+          description: Invalid parameter
+
+
+  /users/{userid}/bookings/movies:
+    get:
+      tags:
+        - developers
+      summary: Get bookings of an user with movies informations
+      description: Get all the bookings for an user with his id with the informations of the movies.
+      operationId: get_user_bookings_movies
+      responses:
+        "200":
+          description: User's bookings and movies informations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllUsers'
+        "400":
+          description: Invalid parameter
+
+  /users/bylastactive:
+    get:
+      tags:
+        - developers
+      summary: Get user by its last activite
+      description: Get all the users sorting by their last activite
       operationId: get_user_bylastactive
       responses:
         "200":
@@ -282,7 +263,7 @@ paths:
                           example: "GET"
                         summary:
                           type: string
-                          example: "Get a user by its ID"
+                          example: "Get an user by its ID"
                 example:
                   endpoints:
                     - url: "/"
@@ -294,34 +275,31 @@ paths:
                     - url: "/users/"
                       method: "GET"
                       summary: "Get all users"
+                    - url: "/users/"
+                      method: "POST"
+                      summary: "Add an user"
                     - url: "/users/{userid}"
                       method: "GET"
                       summary: "Get an user by its ID"
                     - url: "/users/{userid}"
-                      method: "POST"
-                      summary: "Add an user by its ID"
-                    - url: "/users/{userid}"
-                      method: "UPDATE"
+                      method: "PUT"
                       summary: "Update an user by its ID"
                     - url: "/users/{userid}"
                       method: "DELETE"
                       summary: "Delete an user by its ID"
+                    - url: "/users/bylastactive"
+                      method: "GET"
+                      summary: "Get a users by its last-active info"
                     - url: "/users/{userid}/booking"
                       method: "GET"
                       summary: "Get bookings of an user by its id"
+                    - url: "/users/{userid}/booking/movies"
+                      method: "GET"
+                      summary: "Get bookings of an user by its id with the movies informations"
+
 
 components:
   schemas:
-    AllUsers:
-      type: object
-      required:
-        - users
-      properties:
-        users:
-          type: array
-          items:
-            type: object
-            $ref: '#/components/schemas/UserItem'
     UserItem:
       type: object
       required:
@@ -334,6 +312,15 @@ components:
         name:
           type: string
           example: Firstname Lastname
-
+    AllUsers:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/UserItem'
 
 
