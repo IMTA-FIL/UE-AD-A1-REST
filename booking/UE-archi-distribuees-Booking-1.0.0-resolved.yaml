@@ -99,8 +99,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookingsUser'
+        "201":
+          description: 'bad input parameter'
+        "400":
+          description: 'Wrong input"'
         "409":
           description: an existing item already exists
+  /movies_at_the_date/{date}:
+    get:
+      tags:
+        - admins
+        - developers
+      summary: get all the bookings available at the date date
+      description: Contact the API Times to get all the bookings available at the date date
+      operationId: get_movie_at_date
+      parameters:
+        - name: date
+          in: path
+          description: date of the booking
+          required: true
+          style: simple
+          schema:
+            type: string 
+      responses:
+        "200":
+          description: Boonkings returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        "400":
+          description: There was a problem with the request
 components:
   schemas:
     AllBookings:
@@ -146,3 +175,17 @@ components:
         movieid:
           type: string
           example: 276c79ec-a26a-40a6-b3d3-fb242a5947b6
+    Schedule:
+      required:
+        - date
+        - movies
+      type: object
+      properties:
+        date:
+          type: string
+          example: "20151130"
+        movies:
+          type: array
+          items:
+            type: string
+            example: 720d006c-3a57-4b6a-b18f-9b713b073f3c
