@@ -58,8 +58,8 @@ def get_movies_available_at_date(date:str):
    return make_response({"error":"There was a problem during the request"},400)
 
 @app.route("/book_a_movie",methods=["POST"])
-def book_the_movie(): # Convertir ceci en POST avec dico
-   if request.args:
+def book_the_movie(): 
+   if request.get_json():
       """This function books the movie name moviename for the user username"""
       # We get the informations we want
       request_json = request.get_json()
@@ -67,6 +67,7 @@ def book_the_movie(): # Convertir ceci en POST avec dico
       # We need to convert the moviename into a movie_id
       req = requests.request("GET", MOVIE_PATH + "/movieid_linked_movietitle")
       if req.status_code == 200:
+         print("Req a finit ")
          dict_id_to_name = req.json()
          # We seek the id corresponding to the title moviename
          for key in dict_id_to_name.keys():
@@ -76,10 +77,12 @@ def book_the_movie(): # Convertir ceci en POST avec dico
                req2 = requests.request("POST",BOOKING_PATH + f"/bookings/{convert_username_id(username)}",
                                        params=new_movie)
                if req2.status_code==200:
-                  return make_response(render_template('booking_made.html',bodytext=moviename,username=username),200)
+                  print("movie name : ", moviename)
+                  return make_response(render_template('booking_made.html',username=username),200)
                else: 
                   return make_response({"message":"We couldn't book the date, Sadge :'("},205)
       return make_response({"error": "Bad argument"},400)
+   print("request.args : ", request)
    return make_response({"error":"Bad argument"},400)
 
 @app.route("/booking_made/<username>",methods=["GET"]) # TO DO : ajouter l'utilisateur au lieu de lever une erreur ???
