@@ -12,5 +12,5 @@ RUN
 # copy the app files and directories
 RUN
 
-# start movie.py when the container is started
+# start schedule.py when the container is started
 CMD 

@@ -1,6 +1,16 @@
 FROM python
+# can you find a lighter image?
+
 WORKDIR /app
-COPY requirements.txt /app
-RUN pip install -r requirements.txt
-ADD . /app/
-CMD ["python","-u","user.py"]
+
+# copy the requirements file in the workdir
+RUN
+
+# install the Python requirements
+RUN
+
+# copy the app files and directories
+RUN
+
+# start user.py when the container is started
+CMD 
