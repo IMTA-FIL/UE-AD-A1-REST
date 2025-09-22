@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: Schedule Service API
+  summary: read title
+  description: API for managing movie schedules in cinemas
+  contact:
+    name: chatgpt
+    url: http://chat.openai.com
+paths:
+  /:
+    get:
+      tags:
+        - Home
+      summary: Service homepage
+      description: Returns a welcome message for the Schedule service
+      responses:
+        '200':
+          description: Welcome message
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<h1 style='color:blue'>Welcome to the Showtime service!</h1>"
+
+  /schedule/{schedule_date}:
+    get:
+      summary: Get schedule for a specific date
+      description: Returns the list of movies scheduled for a specific date
+      parameters:
+        - name: schedule_date
+          in: path
+          required: true
+          description: Date in YYYYMMDD format
+          schema:
+            type: string
+            pattern: '^[0-9]{8}$'
+            example: "20151201"
+      responses:
+        '200':
+          description: Schedule found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleItem'
+        '404':
+          description: Schedule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - admins
+      summary: Remove a movie from a schedule
+      description: Removes a specific movie from the schedule of a given date. If it's the last movie, removes the entire date schedule.
+      parameters:
+        - name: schedule_date
+          in: path
+          required: true
+          description: Date in YYYYMMDD format
+          schema:
+            type: string
+            pattern: '^[0-9]{8}$'
+            example: "20151201"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - movie_id
+              properties:
+                movie_id:
+                  type: string
+                  description: Unique identifier of the movie to remove
+                  example: "720d006c-3a57-4b6a-b18f-9b713b073f3c"
+      responses:
+        '200':
+          description: Movie successfully removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - "movie removed from schedule"
+                      - "schedule date removed (no movies left)"
+        '404':
+          description: Movie or date not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /schedule:
+    post:
+      tags:
+        - admins
+      summary: Create or modify a schedule
+      description: Adds a movie to the schedule of a date. If the date doesn't exist, creates a new schedule. If the date exists, adds the movie to the existing list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - date
+                - movie_id
+              properties:
+                date:
+                  type: string
+                  pattern: '^[0-9]{8}$'
+                  description: Date in YYYYMMDD format
+                  example: "20151201"
+                movie_id:
+                  type: string
+                  description: Unique identifier of the movie
+                  example: "720d006c-3a57-4b6a-b18f-9b713b073f3c"
+      responses:
+        '200':
+          description: Movie added to existing date
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "movie added to existing date"
+        '201':
+          description: New schedule created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "new schedule created"
+        '500':
+          description: Internal server error (missing data)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    ScheduleItem:
+      type: object
+      properties:
+        date:
+          type: string
+          pattern: '^[0-9]{8}$'
+          description: Date in YYYYMMDD format
+          example: "20151201"
+        movies:
+          type: array
+          items:
+            type: string
+          description: List of movie identifiers scheduled
+          example: 
+            - "267eedb8-0f5d-42d5-8f43-72426b9fb3e6"
+            - "7daf7208-be4d-4944-a3ae-c1c2f516f3e6"
+            - "39ab85e5-5e8e-4dc5-afea-65dc368bd7ab"
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error description
+          example: "schedule not found"
