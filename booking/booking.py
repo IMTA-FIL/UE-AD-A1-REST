@@ -11,6 +11,12 @@ HOST = '0.0.0.0'
 with open('{}/databases/bookings.json'.format("."), "r") as jsf:
    bookings = json.load(jsf)["bookings"]
 
+def write(bookings):
+    with open('{}/databases/bookings.json'.format("."), 'w') as f:
+        full = {}
+        full['bookings']=bookings
+        json.dump(full, f)
+
 @app.route("/", methods=['GET'])
 def home():
    return "<h1 style='color:blue'>Welcome to the Booking service!</h1>"
