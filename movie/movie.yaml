@@ -21,7 +21,7 @@ paths:
   /:
     get:
       tags:
-        - root
+        - dev
       summary: Service home page
       description: Returns an HTML welcome message.
       responses:
@@ -36,7 +36,7 @@ paths:
   /json:
     get:
       tags:
-        - movies
+        - dev
       summary: Retrieve the full list of movies
       description: Returns the list of all available movies.
       responses:
@@ -52,7 +52,7 @@ paths:
   /movies/{movieid}:
     get:
       tags:
-        - movies
+        - dev
       summary: Retrieve a movie by its ID
       parameters:
         - $ref: "#/components/parameters/MovieId"
@@ -72,7 +72,7 @@ paths:
 
     post:
       tags:
-        - movies
+        - admin
       summary: Add a new movie
       description: Adds a movie with the given ID, if it doesn't already exist.
       parameters:
@@ -104,7 +104,7 @@ paths:
   /moviesbytitle:
     get:
       tags:
-        - movies
+        - dev
       summary: Retrieve a movie by its title
       parameters:
         - name: title
@@ -130,7 +130,7 @@ paths:
   /movies/{movieid}/{rate}:
     put:
       tags:
-        - movies
+        - admin
       summary: Update a movie's rating
       parameters:
         - $ref: "#/components/parameters/MovieId"
