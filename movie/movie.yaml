@@ -21,7 +21,7 @@ paths:
   /:
     get:
       tags:
-        - dev
+        - root
       summary: Service home page
       description: Returns an HTML welcome message.
       responses:
@@ -36,7 +36,7 @@ paths:
   /json:
     get:
       tags:
-        - dev
+        - movies
       summary: Retrieve the full list of movies
       description: Returns the list of all available movies.
       responses:
@@ -52,7 +52,7 @@ paths:
   /movies/{movieid}:
     get:
       tags:
-        - dev
+        - movies
       summary: Retrieve a movie by its ID
       parameters:
         - $ref: "#/components/parameters/MovieId"
@@ -72,7 +72,7 @@ paths:
 
     post:
       tags:
-        - admin
+        - movies
       summary: Add a new movie
       description: Adds a movie with the given ID, if it doesn't already exist.
       parameters:
@@ -104,7 +104,7 @@ paths:
   /moviesbytitle:
     get:
       tags:
-        - dev
+        - movies
       summary: Retrieve a movie by its title
       parameters:
         - name: title
@@ -130,7 +130,7 @@ paths:
   /movies/{movieid}/{rate}:
     put:
       tags:
-        - admin
+        - movies
       summary: Update a movie's rating
       parameters:
         - $ref: "#/components/parameters/MovieId"
@@ -167,25 +167,29 @@ components:
   schemas:
     Movie:
       type: object
-      description: >
-        Representation of a movie. Since the exact field structure isn't
-        defined server-side (it's a free-form structure loaded from
-        movies.json), only the fields identified in the code are listed
-        below; additional properties are accepted.
+      description: Representation of a movie.
       properties:
         id:
           type: string
+          format: uuid
           description: Unique identifier of the movie
-          example: "1"
+          example: "720d006c-3a57-4b6a-b18f-9b713b073f3c"
         title:
           type: string
           description: Movie title
-          example: "Inception"
+          example: "The Good Dinosaur"
         rating:
-          type: string
+          type: number
+          format: float
           description: Rating assigned to the movie
-          example: "5"
-      additionalProperties: true
+          example: 7.4
+        director:
+          type: string
+          description: Movie director
+          example: "Peter Sohn"
+      required:
+        - id
+        - title
 
     Error:
       type: object
